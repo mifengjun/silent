@@ -18,3 +18,7 @@
 
 可能用的词语
 
+ThreadPoolExecutor / ThreadPool
+Concurrent / Block / NonBlock / Synchronized Sync/
+Asynchronous / Fair / NonFair
+
