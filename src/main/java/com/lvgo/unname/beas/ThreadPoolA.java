@@ -18,6 +18,7 @@ public class ThreadPoolA extends AbstractThreadPool {
      */
     @Override
     public void execute(UnameThread unameThread) {
-
+        System.out.println("ThreadPoolA.execute");
+        unameThread.run();
     }
 }

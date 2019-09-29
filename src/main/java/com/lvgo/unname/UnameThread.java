@@ -8,4 +8,6 @@ package com.lvgo.unname;
  * @date 2019/9/24 15:45
  */
 public abstract class UnameThread {
+
+    public abstract void run();
 }

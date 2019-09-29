@@ -11,7 +11,9 @@ import java.util.function.Supplier;
  * @version 1.0
  * @date 2019/9/24 16:24
  */
+@FunctionalInterface
 public interface ThreadPoolBuilder {
+
 
     /**
      * ≥ı ºππΩ®
