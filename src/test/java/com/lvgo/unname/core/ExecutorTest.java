@@ -6,11 +6,6 @@ class ExecutorTest {
 
     @Test
     void execute() {
-        new Executor<String>() {
-            @Override
-            public void execute(String s) {
-                System.out.println("s = " + s);
-            }
-        };
+
     }
 }

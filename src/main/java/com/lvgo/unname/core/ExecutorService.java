@@ -1,5 +1,7 @@
 package com.lvgo.unname.core;
 
+import java.util.List;
+
 /**
  * ÈÎÎñÖ´ÐÐÆ÷
  *
@@ -7,6 +9,7 @@ package com.lvgo.unname.core;
  * @version 1.0
  * @date 2019/9/29 9:56
  */
-public class Executor<E> {
+public abstract class ExecutorService<T> {
+
 
 }
