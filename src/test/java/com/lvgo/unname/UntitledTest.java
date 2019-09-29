@@ -27,7 +27,7 @@ public class UntitledTest {
             testStrArray.add("第" + i + "行");
         }
         for (int i = 1; i <= 100; i++) {
-            tq.offer("哦们木木木");
+            tq.offer("哦们木木");
         }
 
         System.out.println("初始化数据完成");
