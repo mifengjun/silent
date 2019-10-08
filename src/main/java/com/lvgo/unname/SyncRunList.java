@@ -46,9 +46,9 @@ public abstract class SyncRunList<E> {
     /**
      * 获取下一个待执行元素
      *
-     * @return
+     * @return 下一个待执行元素
      */
-    public E poll() {
+    private E poll() {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -99,6 +99,7 @@ public abstract class SyncRunList<E> {
      * @param syncRunnable
      */
     protected void afterRun(SyncRunnable syncRunnable) {
+        System.out.println("syncRunnable = " + syncRunnable);
     }
 
     /**
@@ -152,6 +153,7 @@ public abstract class SyncRunList<E> {
                 E item;
                 while ((item = poll()) != null) {
                     taskRun(item);
+                    System.out.println(Thread.currentThread());
                 }
             } finally {
                 afterRun(this);
