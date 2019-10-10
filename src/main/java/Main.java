@@ -1,30 +1,37 @@
-import com.lvgo.unname.SyncRunList;
-import com.lvgo.unname.ThreadPoolFactory;
+import com.lvgo.unname.ConcurrentListTaskHandler;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-        ExecutorService threadPool = ThreadPoolFactory.newThreadPool();
-
 
         ArrayList<String> strings = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i <= 10; i++) {
             strings.add("第" + i + "个");
         }
-        new SyncRunList<String>(strings) {
+        new ConcurrentListTaskHandler<String>(null) {
             /**
-             * 单元素任务执行
+             * execute task
              *
-             * @param task 元素
+             * @param s task element
              */
             @Override
-            protected void taskRun(String task) {
-                System.out.println("task = " + task);
+            protected void run(String s) {
+
             }
-        }.execute(threadPool, 5);
-        System.out.println("strings = " + strings);
+
+            /**
+             * execute task with param
+             *
+             * @param s         task element
+             * @param mapParams task param
+             */
+            @Override
+            protected void runWithParam(String s, Map<String, Object> mapParams) {
+
+            }
+        }.execute(20);
     }
 }

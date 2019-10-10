@@ -16,7 +16,7 @@ public class ThreadPoolFactory {
     }
 
     public static ExecutorService newThreadPool(ThreadFactory threadFactory) {
-        return new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
+        return new ThreadPoolExecutor(50, 200, 0, TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 threadFactory);
     }
