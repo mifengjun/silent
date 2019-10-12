@@ -20,5 +20,4 @@ public class ThreadPoolFactory {
                 new SynchronousQueue<>(),
                 threadFactory);
     }
-
 }

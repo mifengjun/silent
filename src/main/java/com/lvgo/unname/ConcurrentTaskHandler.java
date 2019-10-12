@@ -1,7 +1,6 @@
 package com.lvgo.unname;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -14,43 +13,33 @@ import java.util.logging.Logger;
  * @version 1.0
  * @date 2019/10/10 9:19
  */
-public abstract class ConcurrentListTaskHandler<T> {
-    private final static Logger LOG = Logger.getLogger(ConcurrentListTaskHandler.class.getName());
+public abstract class ConcurrentTaskHandler<T> {
+    protected final static Logger LOG = Logger.getLogger(ConcurrentTaskHandler.class.getName());
     /**
      * 默认启动线程数量
      */
-    private int defaultThreadCount = 50;
+    protected int defaultThreadCount = 50;
     /**
      * 当前任务数
      */
-    private int count;
+    protected int count;
     /**
      * 任务执行索引
      */
-    private int index = 0;
+    protected int index = 0;
     /**
      * 数据读取锁
      */
-    private ReentrantLock lock;
+    protected ReentrantLock lock;
     /**
      * 待处理任务列表
      */
-    private List<T> taskList;
-    /**
-     * 任务执行辅助参数
-     */
-    private Map<String, Object> mapParams;
+    protected List<T> taskList;
 
 
-    public ConcurrentListTaskHandler(List<T> taskList, Map<String, Object> mapParams) {
+    public ConcurrentTaskHandler(List<T> taskList) {
         this.taskList = taskList;
         lock = new ReentrantLock();
-        this.mapParams = mapParams;
-    }
-
-
-    public ConcurrentListTaskHandler(List<T> taskList) {
-        this(taskList, null);
     }
 
     /**
@@ -60,21 +49,13 @@ public abstract class ConcurrentListTaskHandler<T> {
      */
     protected abstract void run(T t);
 
-    /**
-     * execute task with param
-     *
-     * @param t         task element
-     * @param mapParams task param
-     */
-    protected abstract void runWithParam(T t, Map<String, Object> mapParams);
-
     public void execute() {
         execute(ThreadPoolFactory.newThreadPool(), defaultThreadCount);
     }
 
     public void execute(ExecutorService executorService, int concurrentCount) {
         if (taskList == null) {
-            LOG.log(Level.WARNING, "current taskList is null, ConcurrentListTaskHandler exit!!!");
+            LOG.log(Level.WARNING, "current taskList is null, ConcurrentTaskHandler exit!!!");
             return;
         }
         this.count = taskList.size();
@@ -87,7 +68,7 @@ public abstract class ConcurrentListTaskHandler<T> {
         }
     }
 
-    private T nextTask() {
+    protected T nextTask() {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -119,11 +100,7 @@ public abstract class ConcurrentListTaskHandler<T> {
             T t;
             try {
                 while ((t = nextTask()) != null) {
-                    if (mapParams != null) {
-                        ConcurrentListTaskHandler.this.runWithParam(t, mapParams);
-                    } else {
-                        ConcurrentListTaskHandler.this.run(t);
-                    }
+                    ConcurrentTaskHandler.this.run(t);
                 }
             } catch (Exception e) {
 

@@ -1,4 +1,5 @@
-import com.lvgo.unname.ConcurrentListTaskHandler;
+import com.lvgo.unname.ConcurrentTaskHandler;
+import com.lvgo.unname.ConcurrentTaskWithParamHandler;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class Main {
         for (int i = 0; i <= 10; i++) {
             strings.add("µÚ" + i + "¸ö");
         }
-        new ConcurrentListTaskHandler<String>(null) {
+        new ConcurrentTaskHandler<String>(null) {
             /**
              * execute task
              *
@@ -21,6 +22,10 @@ public class Main {
             protected void run(String s) {
 
             }
+        }.execute(20);
+
+
+        new ConcurrentTaskWithParamHandler<String>(null, null) {
 
             /**
              * execute task with param
@@ -32,6 +37,6 @@ public class Main {
             protected void runWithParam(String s, Map<String, Object> mapParams) {
 
             }
-        }.execute(20);
+        }.execute();
     }
 }
