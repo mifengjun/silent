@@ -3,7 +3,7 @@ package com.lvgo.unname;
 import java.util.concurrent.*;
 
 /**
- * ²¢·¢ÈÎÎñÏß³Ì³Ø¹¤³§
+ * å¹¶å‘ä»»åŠ¡çº¿ç¨‹æ± å·¥å‚
  *
  * @author lvgo
  * @version 1.0
