@@ -39,7 +39,7 @@ public class TaskHandlerTest {
 
 
         try {
-            Thread.sleep(20000000000000000L);
+            Thread.sleep(20000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
