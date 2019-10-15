@@ -11,6 +11,18 @@ import java.util.concurrent.*;
  */
 class ThreadPoolFactory {
 
+    public static void main(String[] args) {
+
+        long s = 6001000 / 1000;
+        long second = s % 60;
+        long hour = s / 60;
+        long minute = hour % 60;
+
+        System.out.println(hour / 60 + "时" + minute + "分" + second + "秒");
+
+
+    }
+
     static ExecutorService getThreadPool() {
         return new ThreadPoolExecutor(
                 50,

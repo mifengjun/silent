@@ -1,51 +1,60 @@
 package com.lvgo.unname;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class TaskHandler<T> {
-    private final static Logger LOG = Logger.getLogger(TaskHandler.class.getName());
+
+    private final Logger log = LoggerFactory.getLogger(TaskHandler.class);
     /**
-     * Ä¬ÈÏÆô¶¯Ïß³ÌÊıÁ¿
+     * é»˜è®¤å¯åŠ¨çº¿ç¨‹æ•°é‡
      */
     private int defaultThreadCount = 50;
     /**
-     * µ±Ç°ÈÎÎñÊı
+     * å½“å‰ä»»åŠ¡æ•°
      */
     private int count;
     /**
-     * ÈÎÎñÖ´ĞĞË÷Òı
+     * ä»»åŠ¡æ‰§è¡Œç´¢å¼•
      */
     private int index = 0;
     /**
-     * Êı¾İ¶ÁÈ¡Ëø
+     * æ•°æ®è¯»å–é”
      */
     private ReentrantLock lock;
     /**
-     * ´ı´¦ÀíÈÎÎñÁĞ±í
+     * å¾…å¤„ç†ä»»åŠ¡åˆ—è¡¨
      */
     private List<T> taskList;
     /**
-     * ÈÎÎñ´¦ÀíÍ¬²½Ëø
+     * ä»»åŠ¡å¤„ç†åŒæ­¥é”
      */
     private CountDownLatch syncControl;
     /**
-     * ÊÇ·ñÍ¬²½
+     * æ˜¯å¦åŒæ­¥
      */
     private boolean sync;
     /**
-     * ÈÎÎñÖ´ĞĞ¸¨Öú²ÎÊı
+     * ä»»åŠ¡æ‰§è¡Œè¾…åŠ©å‚æ•°
      */
     private Map<String, Object> param;
+
+    private TaskOverRun taskOverRun;
 
     public TaskHandler(List<T> taskList) {
         this.taskList = taskList;
         lock = new ReentrantLock();
+    }
+
+    public TaskHandler overRun(TaskOverRun taskOverRun) {
+        this.taskOverRun = taskOverRun;
+        return this;
     }
 
     public TaskHandler sync(boolean sync) {
@@ -71,9 +80,10 @@ public abstract class TaskHandler<T> {
     }
 
     private void execute(Executor executor, int concurrentCount, Runnable runnable) {
+        final long start = System.currentTimeMillis();
         syncControl = new CountDownLatch(concurrentCount);
         if (taskList == null) {
-            LOG.log(Level.WARNING, "current taskList is null, ConcurrentTaskHandler exit!!!");
+            log.error("current taskList is null, ConcurrentTaskHandler exit!!!");
             return;
         }
         this.count = taskList.size();
@@ -81,7 +91,7 @@ public abstract class TaskHandler<T> {
             try {
                 executor.execute(runnable);
             } catch (RuntimeException r) {
-                LOG.log(Level.WARNING, "executor error , sleep 10 seconds");
+                log.error("executor error , sleep 10 seconds");
                 try {
                     Thread.sleep(1000L * 10);
                 } catch (InterruptedException e) {
@@ -90,33 +100,68 @@ public abstract class TaskHandler<T> {
             }
         }
 
+        // set task over run this code block
+        if (taskOverRun != null && !sync) {
+            new Thread(() -> {
+                try {
+                    syncControl.await();
+                    printCost(start);
+                    taskOverRun.overRun();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
         if (sync) {
             try {
                 syncControl.await();
+                printCost(start);
+                if (taskOverRun != null) {
+                    taskOverRun.overRun();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
+
     }
+
+    private void printCost(long start) {
+        long costTime = (System.currentTimeMillis() - start) / 1000;
+        long hour = costTime / 60;
+        long minute = hour % 60;
+        long second = costTime % 60;
+        String cost = "";
+        if (hour != 0) {
+            cost += hour + "h";
+        }
+        if (minute != 0) {
+            cost += minute + "m";
+        }
+        cost += second + "s";
+        log.info("current tasks successfully! total:{}, cost:{}", count, cost);
+    }
+
 
     private T nextTask() {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            index += 1;
             return (index < count) ? taskList.get(index) : null;
         } finally {
+            index += 1;
             lock.unlock();
         }
     }
 
-
     /**
      * custom service function implement
      *
-     * @param t ÈÎÎñÊı¾İ
+     * @param t ä»»åŠ¡æ•°æ®
      */
-    public abstract void runTask(T t);
+    public abstract void run(T t);
 
     private class TaskRun implements Runnable {
         /**
@@ -135,10 +180,10 @@ public abstract class TaskHandler<T> {
             T t;
             try {
                 while ((t = nextTask()) != null) {
-                    runTask(t);
+                    TaskHandler.this.run(t);
                 }
             } catch (Exception e) {
-                LOG.warning("task error . " + Thread.currentThread());
+                log.error("task error", e);
             } finally {
                 syncControl.countDown();
             }

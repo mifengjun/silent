@@ -2,18 +2,20 @@ package com.lvgo.unname;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaskHandlerTest {
-
+    private final Logger log = LoggerFactory.getLogger(TaskHandlerTest.class);
     private List<String> testData = new ArrayList<>();
 
     @BeforeEach
     public void initParam() {
-        for (int i = 0; i <= 100; i++) {
-            testData.add("µÚ" + i + "¸öÈÎÎñ");
+        for (int i = 1; i <= 10; i++) {
+            testData.add(i + "");
         }
     }
 
@@ -21,15 +23,26 @@ public class TaskHandlerTest {
     void sync() {
         new TaskHandler<String>(testData) {
             @Override
-            public void runTask(String s) {
-                Integer index = Integer.valueOf(s);
-                if (index % 100 == 0) {
-                    System.out.println(index);
+            public void run(String s) {
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                log.info("ç¬¬" + s + "ä¸ªä»»åŠ¡" + Thread.currentThread());
             }
-        }.sync(false).execute(10);
+        }.sync(false).overRun(() -> {
+            log.debug("æˆ‘æ‰€æœ‰çš„ä»»åŠ¡æ‰§è¡Œç»“æŸäº†");
+        }).execute(1);
 
-        System.out.println("ÎÒ³öÏÖÔÚ×îºó´ú±íÈÎÎñÎªÍ¬²½½øĞĞ£¬ ·ñÔòÎªÒì²½");
+        log.error("æˆ‘å‡ºç°åœ¨æœ€åä»£è¡¨ä»»åŠ¡ä¸ºåŒæ­¥è¿›è¡Œï¼Œ å¦åˆ™ä¸ºå¼‚æ­¥");
+
+
+        try {
+            Thread.sleep(20000000000000000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
