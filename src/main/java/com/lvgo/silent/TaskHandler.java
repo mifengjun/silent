@@ -1,4 +1,4 @@
-package com.lvgo.unname;
+package com.lvgo.silent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * 任务处理器
+ *
+ * @param <T> 任务泛型
+ * @author lvgorice@gmail.com
+ * @version 1.0
+ */
 public abstract class TaskHandler<T> {
 
     private final Logger log = LoggerFactory.getLogger(TaskHandler.class);
@@ -113,6 +120,7 @@ public abstract class TaskHandler<T> {
             }).start();
         }
 
+        // 同异步处理
         if (sync) {
             try {
                 syncControl.await();

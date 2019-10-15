@@ -1,4 +1,4 @@
-package com.lvgo.unname;
+package com.lvgo.silent;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class TaskHandlerTest {
                 }
                 log.info("第" + s + "个任务" + Thread.currentThread());
             }
-        }.sync(false).overRun(() -> {
+        }.sync(true).overRun(() -> {
             log.debug("我所有的任务执行结束了");
         }).execute(1);
 
