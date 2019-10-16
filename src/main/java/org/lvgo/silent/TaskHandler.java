@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -71,22 +71,22 @@ public abstract class TaskHandler<T> {
 
 
     public void execute() {
-        execute(ThreadPoolFactory.getThreadPool(), defaultThreadCount);
+        execute(SilentThreadSupport.getThreadPool(), defaultThreadCount);
     }
 
     public void execute(int concurrentCount) {
-        execute(ThreadPoolFactory.getThreadPool(), concurrentCount);
+        execute(SilentThreadSupport.getThreadPool(), concurrentCount);
     }
 
-    public void execute(Executor executor) {
+    public void execute(ExecutorService executor) {
         execute(executor, defaultThreadCount);
     }
 
-    public void execute(Executor executor, int concurrentCount) {
+    public void execute(ExecutorService executor, int concurrentCount) {
         execute(executor, concurrentCount, new TaskHandler.TaskRun());
     }
 
-    private void execute(Executor executor, int concurrentCount, Runnable runnable) {
+    private void execute(ExecutorService executor, int concurrentCount, Runnable runnable) {
         final long start = System.currentTimeMillis();
         syncControl = new CountDownLatch(concurrentCount);
         if (taskList == null) {
@@ -107,19 +107,6 @@ public abstract class TaskHandler<T> {
             }
         }
 
-        // set task over run this code block
-        if (taskOverRun != null && !sync) {
-            new Thread(() -> {
-                try {
-                    syncControl.await();
-                    printCost(start);
-                    taskOverRun.overRun();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
-
         // 同异步处理
         if (sync) {
             try {
@@ -131,10 +118,24 @@ public abstract class TaskHandler<T> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        } else {
+            new Thread(() -> {
+                try {
+                    syncControl.await();
+                    printCost(start);
+                    // set task over run this code block
+                    if (taskOverRun != null && !sync) {
+                        taskOverRun.overRun();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
 
 
     }
+
 
     private void printCost(long start) {
         long costTime = (System.currentTimeMillis() - start) / 1000;
