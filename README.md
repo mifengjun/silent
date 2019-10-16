@@ -1,4 +1,10 @@
+
+
 ## silent
+
+![GitHub](https://img.shields.io/badge/build-passing-green)
+![GitHub](https://img.shields.io/badge/JDK-1.8-brightgreen)
+![GitHub](https://img.shields.io/badge/version-1.0-orange)
 
 '无声'并发任务处理器
 
