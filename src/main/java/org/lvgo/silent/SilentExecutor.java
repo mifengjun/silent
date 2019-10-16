@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  * @date 2019/10/8 10:59
  */
-class SilentThreadSupport {
+class SilentExecutor {
 
     static ExecutorService getThreadPool() {
         return new ThreadPoolExecutor(

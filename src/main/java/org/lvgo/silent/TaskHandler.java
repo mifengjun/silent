@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -71,22 +71,22 @@ public abstract class TaskHandler<T> {
 
 
     public void execute() {
-        execute(SilentThreadSupport.getThreadPool(), defaultThreadCount);
+        execute(SilentExecutor.getThreadPool(), defaultThreadCount);
     }
 
     public void execute(int concurrentCount) {
-        execute(SilentThreadSupport.getThreadPool(), concurrentCount);
+        execute(SilentExecutor.getThreadPool(), concurrentCount);
     }
 
-    public void execute(ExecutorService executor) {
+    public void execute(Executor executor) {
         execute(executor, defaultThreadCount);
     }
 
-    public void execute(ExecutorService executor, int concurrentCount) {
+    public void execute(Executor executor, int concurrentCount) {
         execute(executor, concurrentCount, new TaskHandler.TaskRun());
     }
 
-    private void execute(ExecutorService executor, int concurrentCount, Runnable runnable) {
+    private void execute(Executor executor, int concurrentCount, Runnable runnable) {
         final long start = System.currentTimeMillis();
         syncControl = new CountDownLatch(concurrentCount);
         if (taskList == null) {

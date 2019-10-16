@@ -2,9 +2,10 @@ package org.lvgo.silent;
 
 import org.junit.jupiter.api.Test;
 
-class SilentThreadSupportTest {
+class SilentExecutorTest {
 
     @Test
     void getThreadPool() {
+
     }
 }
