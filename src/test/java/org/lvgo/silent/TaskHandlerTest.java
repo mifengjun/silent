@@ -1,4 +1,4 @@
-package com.lvgo.silent;
+package org.lvgo.silent;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

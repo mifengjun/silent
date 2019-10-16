@@ -1,4 +1,4 @@
-package com.lvgo.silent;
+package org.lvgo.silent;
 
 /**
  * 任务结束时调用方法接口

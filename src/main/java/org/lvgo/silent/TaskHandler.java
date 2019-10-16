@@ -1,4 +1,4 @@
-package com.lvgo.silent;
+package org.lvgo.silent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
