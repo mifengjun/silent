@@ -16,7 +16,7 @@ public class TaskHandlerTest {
 
     @BeforeEach
     public void initParam() {
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 1000; i++) {
             testData.add(i + "");
         }
     }
@@ -35,13 +35,13 @@ public class TaskHandlerTest {
             }
         }.sync(false).overRun(() -> {
             log.debug("我所有的任务执行结束了");
-        }).execute(1);
+        }).execute(10);
 
         log.info("我出现在最后代表任务为同步进行， 否则为异步");
 
 
         try {
-            Thread.sleep(20000L);
+            Thread.sleep(2000000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

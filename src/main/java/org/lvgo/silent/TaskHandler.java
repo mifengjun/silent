@@ -112,9 +112,6 @@ public abstract class TaskHandler<T> {
             try {
                 syncControl.await();
                 printCost(start);
-                if (taskOverRun != null) {
-                    taskOverRun.overRun();
-                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -123,10 +120,6 @@ public abstract class TaskHandler<T> {
                 try {
                     syncControl.await();
                     printCost(start);
-                    // set task over run this code block
-                    if (taskOverRun != null && !sync) {
-                        taskOverRun.overRun();
-                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -139,9 +132,10 @@ public abstract class TaskHandler<T> {
 
     private void printCost(long start) {
         long costTime = (System.currentTimeMillis() - start) / 1000;
-        long hour = costTime / 60;
-        long minute = hour % 60;
+        long hour = costTime / (60 * 60);
+        long minute = (costTime - hour * 60 * 60) / 60;
         long second = costTime % 60;
+
         String cost = "";
         if (hour != 0) {
             cost += hour + "h";
@@ -151,6 +145,11 @@ public abstract class TaskHandler<T> {
         }
         cost += second + "s";
         log.info("current tasks successfully! total:{}, cost:{}", count, cost);
+
+        // set task over run this code block
+        if (taskOverRun != null) {
+            taskOverRun.athend();
+        }
     }
 
 

@@ -8,5 +8,8 @@ package org.lvgo.silent;
  */
 @FunctionalInterface
 public interface TaskOverRun {
-    void overRun();
+    /**
+     * at the end 结束时执行
+     */
+    void athend();
 }
