@@ -20,6 +20,16 @@
 
 ## 快速开始
 
+在项目中引入maven
+
+```
+<dependency>
+  <groupId>org.lvgo</groupId>
+  <artifactId>silent</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
 当你有一组任务数据需要处理, 只需像这样
 
 ```java
