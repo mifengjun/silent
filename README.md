@@ -1,7 +1,7 @@
 
 
 ## Silent Task Handler Kit
-![GitHub](https://img.shields.io/github/license/lvgocc/silent)
+[![GitHub license](https://img.shields.io/github/license/lvgocc/silent)](https://github.com/lvgocc/silent/blob/master/LICENSE)
 ![GitHub](https://img.shields.io/badge/build-passing-brightgreen)
 ![GitHub](https://img.shields.io/badge/JDK-1.8-brightgreen)
 ![GitHub](https://img.shields.io/badge/version-1.0-orange)
